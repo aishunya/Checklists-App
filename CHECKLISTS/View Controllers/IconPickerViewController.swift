@@ -13,7 +13,6 @@ protocol IconPickerViewControllerDelegate: AnyObject {
 class IconPickerViewController: UITableViewController {
     weak var delegate: IconPickerViewControllerDelegate?
     
-    
     let icons = [
       "No Icon", "Appointments", "Birthdays", "Chores",
       "Drinks", "Folder", "Groceries", "Inbox", "Photos", "Trips"
@@ -46,8 +45,8 @@ class IconPickerViewController: UITableViewController {
       didSelectRowAt indexPath: IndexPath
     ){
     if let delegate = delegate {
-        let iconName = icons[indexPath.row]
-        delegate.iconPicker(self, didPick: iconName)
+          let iconName = icons[indexPath.row]
+          delegate.iconPicker(self, didPick: iconName)
       }
     }
     

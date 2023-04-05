@@ -19,7 +19,9 @@ class AllListsViewController: UITableViewController, ListDetailViewControllerDel
     
     override func viewDidAppear(_ animated: Bool) {
       super.viewDidAppear(animated)
+        
       navigationController?.delegate = self
+        
       let index = dataModel.indexOfSelectedChecklist
       if index >= 0 && index < dataModel.lists.count {
         let checklist = dataModel.lists[index]
@@ -29,19 +31,19 @@ class AllListsViewController: UITableViewController, ListDetailViewControllerDel
       }
     }
     
-    override func tableView(
-        _ tableView: UITableView,
-        accessoryButtonTappedForRowWith indexPath: IndexPath
+    // MARK: - Navigation
+    
+    override func prepare(
+        for segue: UIStoryboardSegue,
+        sender: Any?
     ){
-        let controller = storyboard!.instantiateViewController(
-            withIdentifier: "ListDetailViewController") as!
-        ListDetailViewController
-        controller.delegate = self
-        let checklist = dataModel.lists[indexPath.row]
-        controller.checklistToEdit = checklist
-        navigationController?.pushViewController(
-            controller,
-            animated: true)
+        if segue.identifier == "ShowChecklist" {
+            let controller = segue.destination as! ChecklistViewController
+            controller.checklist = sender as? Checklist
+        } else if segue.identifier == "AddChecklist" {
+            let controller = segue.destination as! ListDetailViewController
+            controller.delegate = self
+        }
     }
     
     // MARK: - Table view data source
@@ -53,7 +55,6 @@ class AllListsViewController: UITableViewController, ListDetailViewControllerDel
         }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        // Get cell
         let cell: UITableViewCell!
         if let tmp = tableView.dequeueReusableCell(
           withIdentifier: cellIdentifier) {
@@ -74,6 +75,7 @@ class AllListsViewController: UITableViewController, ListDetailViewControllerDel
             cell.detailTextLabel!.text = count == 0 ? "All Done" : "\(count) Remaining"
         }
         cell.imageView!.image = UIImage(named: checklist.iconName)
+        
         return cell
     }
     
@@ -83,9 +85,7 @@ class AllListsViewController: UITableViewController, ListDetailViewControllerDel
     ){
         dataModel.indexOfSelectedChecklist = indexPath.row
         let checklist = dataModel.lists[indexPath.row]
-        performSegue(
-            withIdentifier: "ShowChecklist",
-            sender: checklist)
+        performSegue(withIdentifier: "ShowChecklist", sender: checklist)
     }
     
     override func tableView(
@@ -98,20 +98,21 @@ class AllListsViewController: UITableViewController, ListDetailViewControllerDel
         tableView.deleteRows(at: indexPaths, with: .automatic)
     }
     
-    // MARK: - Navigation
-    override func prepare(
-        for segue: UIStoryboardSegue,
-        sender: Any?
+    override func tableView(
+        _ tableView: UITableView,
+        accessoryButtonTappedForRowWith indexPath: IndexPath
     ){
-        if segue.identifier == "ShowChecklist" {
-            let controller = segue.destination as! ChecklistViewController
-            controller.checklist = sender as? Checklist
-        } else if segue.identifier == "AddChecklist" {
-            let controller = segue.destination as! ListDetailViewController
-            controller.delegate = self
-        }
+        let controller = storyboard!.instantiateViewController(
+            withIdentifier: "ListDetailViewController") as!
+        ListDetailViewController
+        controller.delegate = self
+        let checklist = dataModel.lists[indexPath.row]
+        controller.checklistToEdit = checklist
+        navigationController?.pushViewController(
+            controller,
+            animated: true)
     }
-    
+
     // MARK: - List Detail View Controller Delegates
     func listDetailViewControllerDidCancel(
         _ controller: ListDetailViewController

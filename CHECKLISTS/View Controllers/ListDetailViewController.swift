@@ -41,6 +41,7 @@ class ListDetailViewController: UITableViewController, UITextFieldDelegate, Icon
       doneBarButton.isEnabled = true
       iconName = checklist.iconName
     }
+    iconImage.image = UIImage(named: iconName)
   }
 
   override func viewWillAppear(_ animated: Bool) {
@@ -111,8 +112,7 @@ class ListDetailViewController: UITableViewController, UITextFieldDelegate, Icon
       sender: Any?
     ){
     if segue.identifier == "PickIcon" {
-        let controller = segue.destination as!
-    IconPickerViewController
+        let controller = segue.destination as! IconPickerViewController
         controller.delegate = self
       }
     }
